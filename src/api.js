@@ -1,7 +1,7 @@
 import { Dropbox } from "dropbox";
 
 const CLIENT_ID = "dona9fqxig1hh32";
-const REDIRECT_URI = "http://localhost:5173/redirect";
+const REDIRECT_URI = "https://dbb-test-app.vercel.app/redirect";
 // const REDIRECT_URI = "http://localhost:5173/redirect";
 
 const getAccessTokenFromUrl = () => {
