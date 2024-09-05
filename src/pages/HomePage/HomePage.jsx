@@ -1,16 +1,17 @@
-import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { dropboxAuth } from "../../api.js";
-import { useDispatch } from "react-redux";
-import { fetchContent } from "../../redux/operations.js";
-import FoldersList from "../../components/FoldersList/FoldersList.jsx";
+
 import { Link } from "react-router-dom";
+import { selectStatus, selectToken } from "../../redux/selectors.js";
+import { Loader } from "../../components/Loader/Loader.jsx";
 
 export default function HomePage() {
-  const token = localStorage.getItem("dropboxAccessToken");
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchContent(""));
-  }, [dispatch]);
+  const token = useSelector(selectToken);
+  const status = useSelector(selectStatus);
+
+  if (status === "loading") {
+    return <Loader />;
+  }
 
   return (
     <>

@@ -1,28 +1,30 @@
 import { useDispatch, useSelector } from "react-redux";
 import FoldersList from "../../components/FoldersList/FoldersList.jsx";
-import { createFolder, fetchContent } from "../../redux/operations.js";
+import {
+  createFolder,
+  fetchContentOfFolder,
+  fetchItemById,
+} from "../../redux/operations.js";
 import { useEffect, useState } from "react";
+
+import { MdFolderCopy } from "react-icons/md";
 import { selectFolders } from "../../redux/selectors.js";
+import { Loader } from "../../components/Loader/Loader.jsx";
 
 export default function FoldersPage() {
-  const items = useSelector(selectFolders);
   const [folderName, setFolderName] = useState("");
   const dispatch = useDispatch();
+  const items = useSelector(selectFolders);
 
-  const handleCreateFolder = () => {
-    dispatch(createFolder({ path: "", name: folderName }));
+  const handleCreateFolder = async () => {
+    await dispatch(createFolder({ path: "", name: folderName }));
   };
-
-  useEffect(() => {
-    dispatch(fetchContent(""));
-  }, [dispatch]);
-
-  console.log(items);
 
   return (
     <>
       <h1>FoldersPage</h1>
-      <FoldersList />
+      {!items ? <Loader /> : <FoldersList />}
+      <MdFolderCopy />
       <button onClick={() => handleCreateFolder({})}>Create Folder</button>
       <input
         type="text"

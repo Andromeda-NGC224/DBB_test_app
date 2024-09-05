@@ -3,7 +3,9 @@ import {
   createFolder,
   deleteItem,
   fetchContent,
+  fetchContentOfFolder,
   fetchItemById,
+  getDownloadLink,
   uploadFile,
 } from "./operations.js";
 
@@ -15,10 +17,17 @@ const filesSlice = createSlice({
     status: "",
     error: null,
     currentFolder: null,
+    token: localStorage.getItem("dropboxAccessToken") || "",
   },
   reducers: {
     setPathNow: (state, action) => {
       state.pathNow = action.payload;
+    },
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
+    clearToken: (state) => {
+      state.token = "";
     },
   },
   extraReducers: (builder) => {
@@ -27,7 +36,7 @@ const filesSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchContent.fulfilled, (state, action) => {
-        state.status = "succees";
+        state.status = "success";
         state.items = action.payload;
       })
       .addCase(fetchContent.rejected, (state, action) => {
@@ -42,6 +51,34 @@ const filesSlice = createSlice({
         state.currentFolder = action.payload;
       })
       .addCase(fetchItemById.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(fetchContentOfFolder.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchContentOfFolder.fulfilled, (state, action) => {
+        state.status = "success";
+        const currentFolder = state.currentFolder;
+        if (currentFolder) {
+          currentFolder.files = action.payload;
+        }
+      })
+      .addCase(fetchContentOfFolder.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(getDownloadLink.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getDownloadLink.fulfilled, (state, action) => {
+        state.status = "success";
+        const currentFolder = state.currentFolder;
+        if (currentFolder) {
+          currentFolder.links = action.payload;
+        }
+      })
+      .addCase(getDownloadLink.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
@@ -89,5 +126,5 @@ const filesSlice = createSlice({
   },
 });
 
-export const { setPathNow } = filesSlice.actions;
+export const { setPathNow, setToken, clearToken } = filesSlice.actions;
 export default filesSlice.reducer;

@@ -2,6 +2,8 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "../Layout/Layout.jsx";
 import "./App.css";
 import { lazy } from "react";
+import { useSelector } from "react-redux";
+import { selectFolders } from "../../redux/selectors.js";
 
 const HomePage = lazy(() => import("../../pages/HomePage/HomePage.jsx"));
 const RedirectPage = lazy(() =>
@@ -15,6 +17,9 @@ const FoldersPageDetails = lazy(() =>
 );
 
 export default function App() {
+  const items = useSelector(selectFolders);
+  console.log(items);
+
   return (
     <Layout>
       <Routes>
