@@ -2,12 +2,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectCurrentFolder,
   selectFilesInCurrentFolder,
-  selectFolders,
-  selectLinks,
 } from "../../redux/selectors.js";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  createFolder,
   deleteItem,
   fetchContent,
   fetchContentOfFolder,
@@ -18,7 +15,8 @@ import {
 import { Loader } from "../../components/Loader/Loader.jsx";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
-import FoldersList from "../../components/FoldersList/FoldersList.jsx";
+import css from "./FoldersPageDetails.module.css";
+import { FaUpload } from "react-icons/fa";
 
 export default function FoldersPageDetails() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -26,13 +24,9 @@ export default function FoldersPageDetails() {
   const [onShow, setOnShow] = useState(false);
   const { id } = useParams();
   const folder = useSelector(selectCurrentFolder);
-  const links = useSelector(selectLinks);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const listOfFiles = useSelector(selectFilesInCurrentFolder);
-  console.log("Folder", folder);
-  console.log("ListFiles", listOfFiles);
-  console.log("Links", links);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,8 +50,6 @@ export default function FoldersPageDetails() {
     try {
       await dispatch(deleteItem(path));
       await dispatch(fetchContent(""));
-      console.log("Folder deleted successfully");
-      console.log(`ItemId:`, id);
       toast.success("Folder was deleted!");
       navigate("/folders");
     } catch (error) {
@@ -70,7 +62,7 @@ export default function FoldersPageDetails() {
     try {
       await dispatch(deleteItem(path));
       await dispatch(fetchContentOfFolder(folder.path_display));
-      console.log("File deleted successfully");
+      setOnShow(false);
       toast.success("File was deleted!");
     } catch (error) {
       console.error("Error deleting File:", error);
@@ -134,44 +126,69 @@ export default function FoldersPageDetails() {
     }
   };
 
+  const handleFilePick = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
+
   if (!folder || folder.id !== id) {
     return <Loader />;
   }
 
   return (
-    <>
-      <h3>{folder.name}</h3>
-      <p>Path: {folder.path_display}</p>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload File</button>
-      <button onClick={() => onDelete(folder.path_display, folder.id)}>
-        Delete All folder
-      </button>
-
-      {listOfFiles.length === 0 ? null : (
-        <ul>
-          {listOfFiles.map((file, index) => (
-            <li key={index}>
-              {" "}
-              {file.name}
-              <p>{file.size} bytes</p>
-              <button onClick={() => handleDownload(file.path_display)}>
-                Download
-              </button>
-              <button onClick={() => handleShow(file.path_display)}>
-                Show file
-              </button>
-              <button
-                onClick={() => onDeleteFile(file.path_display, folder.id)}
-              >
-                Delete file
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {onShow && <img src={previewLink} alt="Preview" />}
-    </>
+    <div className={css.foldersCont}>
+      <h2>Folder name: {folder.name}</h2>
+      <p>Path to folder: {folder.path_display}</p>
+      <div className={css.funcCont}>
+        {listOfFiles.length === 0 ? null : (
+          <ul>
+            {listOfFiles.map((file, index) => (
+              <li key={index}>
+                {" "}
+                {file.name}
+                <p>{file.size} bytes</p>
+                <button onClick={() => handleDownload(file.path_display)}>
+                  Download
+                </button>
+                <button onClick={() => handleShow(file.path_display)}>
+                  Show file
+                </button>
+                <button
+                  onClick={() => onDeleteFile(file.path_display, folder.id)}
+                >
+                  Delete file
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className={css.forOptionsCont}>
+          <button
+            className={css.btnDeleteAllFolder}
+            onClick={() => onDelete(folder.path_display, folder.id)}
+          >
+            Delete All folder
+          </button>
+          <label className={css.customFileInput} htmlFor="fileInput">
+            {selectedFile ? selectedFile.name : "Choose file to upload"}
+            <input
+              id="fileInput"
+              className={css.inputForSelect}
+              type="file"
+              onChange={handleFilePick}
+            />
+          </label>
+          {selectedFile && (
+            <button className={css.btnUploadFile} onClick={handleUpload}>
+              <FaUpload />
+              Upload File
+            </button>
+          )}
+          {onShow && (
+            <img className={css.imgToShow} src={previewLink} alt="Preview" />
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

@@ -4,6 +4,7 @@ import "./App.css";
 import { lazy } from "react";
 import { useSelector } from "react-redux";
 import { selectFolders } from "../../redux/selectors.js";
+import { PrivateRoute } from "../../components/PrivateRoute/PrivateRoute.jsx";
 
 const HomePage = lazy(() => import("../../pages/HomePage/HomePage.jsx"));
 const RedirectPage = lazy(() =>
@@ -24,8 +25,22 @@ export default function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<HomePage />}></Route>
-        <Route path="/folders" element={<FoldersPage />}></Route>
-        <Route path="/folders/:id" element={<FoldersPageDetails />}></Route>
+        <Route
+          path="/folders"
+          element={
+            <PrivateRoute>
+              <FoldersPage />
+            </PrivateRoute>
+          }
+        ></Route>
+        <Route
+          path="/folders/:id"
+          element={
+            <PrivateRoute>
+              <FoldersPageDetails />
+            </PrivateRoute>
+          }
+        ></Route>
         <Route path="/redirect" element={<RedirectPage />}></Route>
       </Routes>
     </Layout>

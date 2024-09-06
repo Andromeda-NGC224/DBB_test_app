@@ -1,0 +1,75 @@
+.foldersCont {
+  padding-left: 5%;
+  padding-top: 3%;
+  padding-right: 5%;
+  color: #f7f7f7;
+}
+
+.btnUploadFile {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  min-width: 148px;
+  padding: 10px 30px;
+  background-color: #0ba703;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  border: none;
+  transition: background-color 0.35s ease;
+  cursor: pointer;
+  font-family: Inter;
+}
+.btnUploadFile:hover,
+.btnUploadFile:focus {
+  background-color: rgb(26, 102, 43);
+}
+.btnDeleteAllFolder {
+  margin-bottom: 40px;
+  min-width: 148px;
+  padding: 10px 30px;
+  background-color: #963131;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  border: none;
+  transition: background-color 0.35s ease;
+  cursor: pointer;
+  font-family: Inter;
+}
+.btnDeleteAllFolder:hover,
+.btnDeleteAllFolder:focus {
+  background-color: #f0cb75;
+}
+.inputForSelect {
+  display: none;
+}
+.customFileInput {
+  font-size: 16px;
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ba8100;
+  color: white;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+.funcCont {
+  width: 100%;
+  display: flex;
+  gap: 10%;
+  justify-content: space-between;
+}
+.forOptionsCont {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.imgToShow {
+  max-width: 260px;
+}

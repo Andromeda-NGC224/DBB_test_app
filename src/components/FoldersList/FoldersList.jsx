@@ -1,13 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentFolder, selectFolders } from "../../redux/selectors.js";
-import { Link, useParams } from "react-router-dom";
-import {
-  fetchContent,
-  fetchContentOfFolder,
-  fetchItemById,
-  getDownloadLink,
-} from "../../redux/operations.js";
-import { useEffect } from "react";
+import { selectFolders } from "../../redux/selectors.js";
+import { Link } from "react-router-dom";
+import { fetchItemById } from "../../redux/operations.js";
+import { MdFolderCopy } from "react-icons/md";
+import css from "./FoldersList.module.css";
 
 export default function FoldersList() {
   const items = useSelector(selectFolders);
@@ -25,17 +21,18 @@ export default function FoldersList() {
   return (
     <>
       {items && (
-        <ul>
-          LIST
+        <ul className={css.listCont}>
           {items.map((item) => (
             <li key={item.id}>
               <Link
+                className={css.listItem}
                 onClick={() =>
                   handleLoadCurrentItem(item.id, item.path_display)
                 }
                 to={`/folders/${item.id}`}
               >
-                {item.name}
+                <MdFolderCopy size={24} />
+                <p>{item.name}</p>
               </Link>
             </li>
           ))}
