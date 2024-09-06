@@ -3,8 +3,8 @@ import { setToken } from "./redux/filesSlice.js";
 import { useDispatch } from "react-redux";
 
 const CLIENT_ID = "dona9fqxig1hh32";
-const REDIRECT_URI = "https://dbb-test-app.vercel.app/redirect";
-// const REDIRECT_URI = "http://localhost:5173/redirect";
+// const REDIRECT_URI = "https://dbb-test-app.vercel.app/redirect";
+const REDIRECT_URI = "http://localhost:5173/redirect";
 
 const getAccessTokenFromUrl = () => {
   return new URLSearchParams(window.location.hash.substring(1)).get(

@@ -18,6 +18,7 @@ const filesSlice = createSlice({
     error: null,
     currentFolder: null,
     token: localStorage.getItem("dropboxAccessToken") || "",
+    downloadLinks: [],
   },
   reducers: {
     setPathNow: (state, action) => {

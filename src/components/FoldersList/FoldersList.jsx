@@ -1,21 +1,22 @@
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentFolder, selectFolders } from "../../redux/selectors.js";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
+  fetchContent,
   fetchContentOfFolder,
   fetchItemById,
   getDownloadLink,
 } from "../../redux/operations.js";
+import { useEffect } from "react";
 
 export default function FoldersList() {
   const items = useSelector(selectFolders);
 
   const dispatch = useDispatch();
 
-  const handleLoadCurrentItem = async (id, path) => {
+  const handleLoadCurrentItem = async (id) => {
     try {
       await dispatch(fetchItemById(id));
-      await dispatch(fetchContentOfFolder(path));
     } catch (error) {
       console.error("Error loading folder content:", error);
     }

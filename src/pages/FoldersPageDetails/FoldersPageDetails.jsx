@@ -2,10 +2,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectCurrentFolder,
   selectFilesInCurrentFolder,
+  selectFolders,
   selectLinks,
 } from "../../redux/selectors.js";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  createFolder,
   deleteItem,
   fetchContent,
   fetchContentOfFolder,
@@ -16,9 +18,12 @@ import {
 import { Loader } from "../../components/Loader/Loader.jsx";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
+import FoldersList from "../../components/FoldersList/FoldersList.jsx";
 
 export default function FoldersPageDetails() {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [previewLink, setPreviewLink] = useState("");
+  const [onShow, setOnShow] = useState(false);
   const { id } = useParams();
   const folder = useSelector(selectCurrentFolder);
   const links = useSelector(selectLinks);
@@ -47,7 +52,7 @@ export default function FoldersPageDetails() {
     fetchLinkAndCont();
   }, [folder?.path_display, dispatch]);
 
-  const onDelete = async (path, id) => {
+  const onDelete = async (path) => {
     try {
       await dispatch(deleteItem(path));
       await dispatch(fetchContent(""));
@@ -58,6 +63,18 @@ export default function FoldersPageDetails() {
     } catch (error) {
       console.error("Error deleting folder:", error);
       toast.error("Folder was not deleted!");
+    }
+  };
+
+  const onDeleteFile = async (path) => {
+    try {
+      await dispatch(deleteItem(path));
+      await dispatch(fetchContentOfFolder(folder.path_display));
+      console.log("File deleted successfully");
+      toast.success("File was deleted!");
+    } catch (error) {
+      console.error("Error deleting File:", error);
+      toast.error("File was not deleted!");
     }
   };
 
@@ -80,8 +97,38 @@ export default function FoldersPageDetails() {
 
   const handleDownload = async (pathDisplay) => {
     try {
-      const link = await dispatch(getDownloadLink(pathDisplay));
-      console.log("Link", link.payload);
+      const downloadLink = await dispatch(getDownloadLink(pathDisplay));
+      window.location.href = downloadLink.payload;
+    } catch (error) {
+      toast.error("Error downloading");
+    }
+  };
+
+  const handleShow = async (pathDisplay) => {
+    const fileName = pathDisplay.split("/").pop();
+    if (!fileName.endsWith(".jpg") && !fileName.endsWith(".png")) {
+      toast.success("This file does not have a photo.", {
+        style: {
+          border: "1px solid #713200",
+          padding: "16px",
+          color: "#713200",
+        },
+        iconTheme: {
+          primary: "#713200",
+          secondary: "#FFFAEE",
+        },
+      });
+      setOnShow(true);
+      const defaultImage =
+        "https://img.freepik.com/free-photo/file-folder-document-paper-ui-icon-sign-symbol-3d-rendering_56104-1927.jpg";
+
+      setPreviewLink(defaultImage);
+      return;
+    }
+    try {
+      const downloadLink = await dispatch(getDownloadLink(pathDisplay));
+      setOnShow(true);
+      setPreviewLink(downloadLink.payload);
     } catch (error) {
       toast.error("Error downloading");
     }
@@ -97,7 +144,10 @@ export default function FoldersPageDetails() {
       <p>Path: {folder.path_display}</p>
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload File</button>
-      <button>GetLink</button>
+      <button onClick={() => onDelete(folder.path_display, folder.id)}>
+        Delete All folder
+      </button>
+
       {listOfFiles.length === 0 ? null : (
         <ul>
           {listOfFiles.map((file, index) => (
@@ -108,13 +158,20 @@ export default function FoldersPageDetails() {
               <button onClick={() => handleDownload(file.path_display)}>
                 Download
               </button>
+              <button onClick={() => handleShow(file.path_display)}>
+                Show file
+              </button>
+              <button
+                onClick={() => onDeleteFile(file.path_display, folder.id)}
+              >
+                Delete file
+              </button>
             </li>
           ))}
         </ul>
       )}
-      <button onClick={() => onDelete(folder.path_display, folder.id)}>
-        Delete All folder
-      </button>
+
+      {onShow && <img src={previewLink} alt="Preview" />}
     </>
   );
 }

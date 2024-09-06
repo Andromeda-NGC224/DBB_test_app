@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { MdFolderCopy } from "react-icons/md";
 import { selectFolders } from "../../redux/selectors.js";
 import { Loader } from "../../components/Loader/Loader.jsx";
+import toast from "react-hot-toast";
 
 export default function FoldersPage() {
   const [folderName, setFolderName] = useState("");
@@ -17,7 +18,13 @@ export default function FoldersPage() {
   const items = useSelector(selectFolders);
 
   const handleCreateFolder = async () => {
+    if (folderName === "") {
+      toast.error("Enter the name of folder, please.");
+      return;
+    }
     await dispatch(createFolder({ path: "", name: folderName }));
+    toast.success("Folder created successfully!");
+    setFolderName("");
   };
 
   return (
