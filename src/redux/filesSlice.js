@@ -3,6 +3,7 @@ import {
   createFolder,
   deleteItem,
   fetchContent,
+  fetchContentFoldersInFolder,
   fetchContentOfFolder,
   fetchItemById,
   getDownloadLink,
@@ -14,6 +15,7 @@ const filesSlice = createSlice({
   initialState: {
     pathNow: "",
     items: [],
+    itemsInCurrentFolder: [],
     status: "",
     error: null,
     currentFolder: null,
@@ -41,6 +43,17 @@ const filesSlice = createSlice({
         state.items = action.payload;
       })
       .addCase(fetchContent.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(fetchContentFoldersInFolder.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchContentFoldersInFolder.fulfilled, (state, action) => {
+        state.status = "success";
+        state.itemsInCurrentFolder = action.payload;
+      })
+      .addCase(fetchContentFoldersInFolder.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })

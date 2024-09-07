@@ -14,6 +14,7 @@ export default function Layout({ children }) {
   return (
     <Suspense fallback={<Loader />}>
       <Header />
+
       {children}
       <Toaster position="top-center" reverseOrder={false} />
     </Suspense>

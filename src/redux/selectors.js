@@ -2,6 +2,9 @@ import { createSelector } from "reselect";
 
 export const selectFolders = (state) => state.files.items;
 
+export const selectContentFoldersInFolder = (state) =>
+  state.files.itemsInCurrentFolder;
+
 export const selectCurrentFolder = (state) => state.files.currentFolder;
 
 export const selectToken = (state) => state.files.token;

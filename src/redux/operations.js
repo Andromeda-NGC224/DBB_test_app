@@ -14,6 +14,22 @@ export const fetchContent = createAsyncThunk(
     }
   }
 );
+export const fetchContentFoldersInFolder = createAsyncThunk(
+  "files/fetchContentFoldersInFolder",
+  async (path, thunkAPI) => {
+    const token = localStorage.getItem("dropboxAccessToken");
+    const dropbox = new Dropbox({ accessToken: token });
+    try {
+      const response = await dropbox.filesListFolder({ path });
+      const folders = response.result.entries.filter(
+        (entry) => entry[".tag"] === "folder"
+      );
+      return folders;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
 export const fetchContentOfFolder = createAsyncThunk(
   "files/fetchContentOfFolder",

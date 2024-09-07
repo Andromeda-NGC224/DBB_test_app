@@ -1,12 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
+  selectContentFoldersInFolder,
   selectCurrentFolder,
   selectFilesInCurrentFolder,
 } from "../../redux/selectors.js";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
+  createFolder,
   deleteItem,
   fetchContent,
+  fetchContentFoldersInFolder,
   fetchContentOfFolder,
   fetchItemById,
   getDownloadLink,
@@ -16,24 +19,38 @@ import { Loader } from "../../components/Loader/Loader.jsx";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import css from "./FoldersPageDetails.module.css";
-import { FaUpload } from "react-icons/fa";
+import { FaCloudDownloadAlt, FaFileAlt, FaUpload } from "react-icons/fa";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import { BiShowAlt } from "react-icons/bi";
+import { MdFolderCopy } from "react-icons/md";
+import Footer from "../../components/Footer/Footer.jsx";
 
 export default function FoldersPageDetails() {
+  const [showModal, setShowModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewLink, setPreviewLink] = useState("");
   const [onShow, setOnShow] = useState(false);
+  const [folderName, setFolderName] = useState("");
   const { id } = useParams();
   const folder = useSelector(selectCurrentFolder);
+  const foldersInThisFolder = useSelector(selectContentFoldersInFolder);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const listOfFiles = useSelector(selectFilesInCurrentFolder);
+
+  console.log("This Folder", folder);
+  console.log("foldersInThisFolder", foldersInThisFolder);
+  console.log("listOfFiles", listOfFiles);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!folder) {
         await dispatch(fetchItemById(id));
       }
+      if (folder) {
+        await dispatch(fetchContentFoldersInFolder(`${folder.path_display}`));
+      }
     };
+
     fetchData();
   }, [folder, id, dispatch]);
 
@@ -51,7 +68,7 @@ export default function FoldersPageDetails() {
       await dispatch(deleteItem(path));
       await dispatch(fetchContent(""));
       toast.success("Folder was deleted!");
-      navigate("/folders");
+      window.history.back();
     } catch (error) {
       console.error("Error deleting folder:", error);
       toast.error("Folder was not deleted!");
@@ -70,9 +87,9 @@ export default function FoldersPageDetails() {
     }
   };
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+  // const handleFileChange = (event) => {
+  //   setSelectedFile(event.target.files[0]);
+  // };
 
   const handleUpload = async () => {
     if (selectedFile) {
@@ -130,65 +147,179 @@ export default function FoldersPageDetails() {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
+  const handleCreateFolder = async () => {
+    if (folderName === "") {
+      toast.error("Enter the name of folder, please.");
+      return;
+    }
+    await dispatch(
+      createFolder({ path: folder.path_display, name: folderName })
+    );
+    await dispatch(fetchContent(`${folder.path_display}`));
+    await dispatch(fetchContentFoldersInFolder(`${folder.path_display}`));
+
+    toast.success("Folder created successfully!");
+    handleCloseModal();
+  };
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setFolderName("");
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      handleCloseModal();
+    }
+  };
+
+  const handleOverlayClick = (event) => {
+    if (event.target === event.currentTarget) {
+      handleCloseModal();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   if (!folder || folder.id !== id) {
     return <Loader />;
   }
 
   return (
-    <div className={css.foldersCont}>
-      <h2>Folder name: {folder.name}</h2>
-      <p>Path to folder: {folder.path_display}</p>
-      <div className={css.funcCont}>
-        {listOfFiles.length === 0 ? null : (
-          <ul>
-            {listOfFiles.map((file, index) => (
-              <li key={index}>
-                {" "}
-                {file.name}
-                <p>{file.size} bytes</p>
-                <button onClick={() => handleDownload(file.path_display)}>
-                  Download
-                </button>
-                <button onClick={() => handleShow(file.path_display)}>
-                  Show file
-                </button>
-                <button
-                  onClick={() => onDeleteFile(file.path_display, folder.id)}
-                >
-                  Delete file
-                </button>
-              </li>
-            ))}
-          </ul>
+    <div className={css.mainCont}>
+      <div className={css.foldersCont}>
+        <button onClick={handleShowModal} className={css.createNewFolder}>
+          Create new folder
+        </button>
+        {showModal && (
+          <div className={css.overlay} onClick={handleOverlayClick}>
+            <div className={css.modal}>
+              <button onClick={handleCloseModal} className={css.closeButton}>
+                <IoCloseCircleOutline size={24} />
+              </button>
+              <input
+                className={css.input}
+                type="text"
+                value={folderName}
+                onChange={(e) => setFolderName(e.target.value)}
+                placeholder="Enter folder name"
+              />
+              <button className={css.btnToCreate} onClick={handleCreateFolder}>
+                Create
+              </button>
+            </div>
+          </div>
         )}
-        <div className={css.forOptionsCont}>
-          <button
-            className={css.btnDeleteAllFolder}
-            onClick={() => onDelete(folder.path_display, folder.id)}
-          >
-            Delete All folder
-          </button>
-          <label className={css.customFileInput} htmlFor="fileInput">
-            {selectedFile ? selectedFile.name : "Choose file to upload"}
-            <input
-              id="fileInput"
-              className={css.inputForSelect}
-              type="file"
-              onChange={handleFilePick}
-            />
-          </label>
-          {selectedFile && (
-            <button className={css.btnUploadFile} onClick={handleUpload}>
-              <FaUpload />
-              Upload File
-            </button>
-          )}
-          {onShow && (
-            <img className={css.imgToShow} src={previewLink} alt="Preview" />
-          )}
+        <h2 className={css.title}>Folder name: {folder.name}</h2>
+        <p className={css.foldersPath}>Path to folder: {folder.path_display}</p>
+
+        <div style={{ marginBottom: "20px" }}>
+          <h4 className={css.nameOfChapter}>Files</h4>
+          <div className={css.funcCont}>
+            {listOfFiles.length === 0 ? (
+              "There are no files in this folder yet."
+            ) : (
+              <ul className={css.listCont}>
+                {listOfFiles.map((file, index) => (
+                  <li className={css.listItem} key={index}>
+                    <p className={css.textContent}>
+                      <strong>Name:</strong> {file.name}
+                    </p>
+                    <p className={css.textContent}>
+                      <strong>Size:</strong> {file.size} bytes
+                    </p>
+                    <div className={css.containerWithBtns}>
+                      <button
+                        className={css.showDownlBtn}
+                        onClick={() => handleDownload(file.path_display)}
+                      >
+                        <FaCloudDownloadAlt size={14} />
+                        <p>Download</p>
+                      </button>
+                      <button
+                        className={css.showDownlBtn}
+                        onClick={() => handleShow(file.path_display)}
+                      >
+                        <BiShowAlt size={20} />
+                        <p>Show file</p>
+                      </button>
+                    </div>
+                    <FaFileAlt className={css.svgFile} size={18} />
+                    <button
+                      className={css.btnDeleteFile}
+                      onClick={() => onDeleteFile(file.path_display, folder.id)}
+                    >
+                      <IoCloseCircleOutline size={24} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className={css.forOptionsCont}>
+              <button
+                className={css.btnDeleteAllFolder}
+                onClick={() => onDelete(folder.path_display, folder.id)}
+              >
+                Delete all this folder
+              </button>
+              <label className={css.customFileInput} htmlFor="fileInput">
+                {selectedFile ? selectedFile.name : "Choose file to upload"}
+                <input
+                  id="fileInput"
+                  className={css.inputForSelect}
+                  type="file"
+                  onChange={handleFilePick}
+                />
+              </label>
+              {selectedFile && (
+                <button className={css.btnUploadFile} onClick={handleUpload}>
+                  <FaUpload />
+                  Upload File
+                </button>
+              )}
+              {onShow && (
+                <img
+                  className={css.imgToShow}
+                  src={previewLink}
+                  alt="Preview"
+                />
+              )}
+            </div>
+          </div>
         </div>
+        {foldersInThisFolder.length > 0 && (
+          <div style={{ marginBottom: "20px" }}>
+            <h4 className={css.nameOfChapter}>Folders</h4>
+            <div className={css.funcCont}>
+              <ul className={css.listCont}>
+                {foldersInThisFolder.map((item) => (
+                  <li key={item.id}>
+                    <Link
+                      className={css.listItemFolder}
+                      onClick={() =>
+                        handleLoadCurrentItem(item.id, item.path_display)
+                      }
+                      to={`/folders/${item.id}`}
+                    >
+                      <MdFolderCopy size={26} />
+                      <p>{item.name}</p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
+      <Footer />
     </div>
   );
 }

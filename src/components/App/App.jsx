@@ -17,6 +17,9 @@ const FoldersPageDetails = lazy(() =>
   import("../../pages/FoldersPageDetails/FoldersPageDetails.jsx")
 );
 
+const NotFoundPage = lazy(() =>
+  import("../../pages/NotFoundPage/NotFoundPage.jsx")
+);
 export default function App() {
   const items = useSelector(selectFolders);
   console.log(items);
@@ -42,6 +45,7 @@ export default function App() {
           }
         ></Route>
         <Route path="/redirect" element={<RedirectPage />}></Route>
+        <Route path="*" element={<NotFoundPage />}></Route>
       </Routes>
     </Layout>
   );

@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import FoldersList from "../../components/FoldersList/FoldersList.jsx";
-import { createFolder } from "../../redux/operations.js";
+import { createFolder, fetchContent } from "../../redux/operations.js";
 import { useState, useEffect } from "react";
 
 import { selectFolders } from "../../redux/selectors.js";
 import { Loader } from "../../components/Loader/Loader.jsx";
 import toast from "react-hot-toast";
+import Footer from "../../components/Footer/Footer.jsx";
 import css from "./FoldersPage.module.css";
 import { IoCloseCircleOutline } from "react-icons/io5";
 
@@ -52,41 +53,54 @@ export default function FoldersPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const loadContent = async () => {
+      await dispatch(fetchContent(""));
+    };
+    loadContent();
+  }, [dispatch]);
+
   return (
-    <div className={css.foldersCont}>
-      <h1 className={css.title}>Your Folders</h1>
+    <div className={css.mainCont}>
+      <div className={css.foldersCont}>
+        <h1 className={css.title}>Your Folders</h1>
 
-      <div className={css.funcCont}>
-        {!items ? <Loader /> : <FoldersList />}
-        <div className={css.btnContainer}>
-          <button className={css.btnCreate} onClick={handleShowModal}>
-            Create a new folder
-          </button>
+        <div className={css.funcCont}>
+          {!items ? <Loader /> : <FoldersList />}
+          <div className={css.btnContainer}>
+            <button className={css.btnCreate} onClick={handleShowModal}>
+              Create a new folder
+            </button>
 
-          {showModal && (
-            <div className={css.overlay} onClick={handleOverlayClick}>
-              <div className={css.modal}>
-                <button onClick={handleCloseModal} className={css.closeButton}>
-                  <IoCloseCircleOutline size={24} />
-                </button>
-                <input
-                  className={css.input}
-                  type="text"
-                  value={folderName}
-                  onChange={(e) => setFolderName(e.target.value)}
-                  placeholder="Enter folder name"
-                />
-                <button
-                  className={css.btnToCreate}
-                  onClick={handleCreateFolder}
-                >
-                  Create
-                </button>
+            {showModal && (
+              <div className={css.overlay} onClick={handleOverlayClick}>
+                <div className={css.modal}>
+                  <button
+                    onClick={handleCloseModal}
+                    className={css.closeButton}
+                  >
+                    <IoCloseCircleOutline size={24} />
+                  </button>
+                  <input
+                    className={css.input}
+                    type="text"
+                    value={folderName}
+                    onChange={(e) => setFolderName(e.target.value)}
+                    placeholder="Enter folder name"
+                  />
+                  <button
+                    className={css.btnToCreate}
+                    onClick={handleCreateFolder}
+                  >
+                    Create
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
