@@ -26,7 +26,9 @@ export default function FoldersList() {
 
   return (
     <>
-      {items && (
+      {items.length === 0 ? (
+        "There are no folders yet."
+      ) : (
         <ul className={css.listCont}>
           {items.map((item) => (
             <li key={item.id}>
