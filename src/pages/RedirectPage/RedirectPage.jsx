@@ -22,7 +22,7 @@ export default function RedirectPage() {
 
   return (
     <Link className={css.bntLink} to="/folders">
-      Thank you for authorization! Press to to continue.
+      Thank you for authorization! Press to continue.
     </Link>
   );
 }
