@@ -2,8 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "../Layout/Layout.jsx";
 import "./App.css";
 import { lazy } from "react";
-import { useSelector } from "react-redux";
-import { selectFolders } from "../../redux/selectors.js";
 import { PrivateRoute } from "../../components/PrivateRoute/PrivateRoute.jsx";
 
 const HomePage = lazy(() => import("../../pages/HomePage/HomePage.jsx"));
@@ -21,9 +19,6 @@ const NotFoundPage = lazy(() =>
   import("../../pages/NotFoundPage/NotFoundPage.jsx")
 );
 export default function App() {
-  const items = useSelector(selectFolders);
-  console.log(items);
-
   return (
     <Layout>
       <Routes>

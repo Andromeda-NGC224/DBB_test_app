@@ -37,10 +37,6 @@ export default function FoldersPageDetails() {
   const dispatch = useDispatch();
   const listOfFiles = useSelector(selectFilesInCurrentFolder);
 
-  console.log("This Folder", folder);
-  console.log("foldersInThisFolder", foldersInThisFolder);
-  console.log("listOfFiles", listOfFiles);
-
   useEffect(() => {
     const fetchData = async () => {
       if (!folder) {
