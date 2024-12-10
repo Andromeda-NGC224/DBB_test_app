@@ -81,19 +81,23 @@ export default function FoldersPage() {
                   >
                     <IoCloseCircleOutline size={24} />
                   </button>
-                  <input
-                    className={css.input}
-                    type="text"
-                    value={folderName}
-                    onChange={(e) => setFolderName(e.target.value)}
-                    placeholder="Enter folder name"
-                  />
-                  <button
-                    className={css.btnToCreate}
-                    onClick={handleCreateFolder}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleCreateFolder();
+                    }}
                   >
-                    Create
-                  </button>
+                    <input
+                      className={css.input}
+                      type="text"
+                      value={folderName}
+                      onChange={(e) => setFolderName(e.target.value)}
+                      placeholder="Enter folder name"
+                    />
+                    <button type="submit" className={css.btnToCreate}>
+                      Create
+                    </button>
+                  </form>
                 </div>
               </div>
             )}

@@ -3,7 +3,7 @@ import { setToken } from "./redux/filesSlice.js";
 
 const CLIENT_ID = "dona9fqxig1hh32";
 const REDIRECT_URI = "https://dbb-test-app.vercel.app/redirect";
-// const REDIRECT_URI = "http://localhost:5173/redirect";
+
 
 const getAccessTokenFromUrl = () => {
   return new URLSearchParams(window.location.hash.substring(1)).get(
@@ -35,8 +35,6 @@ export const dropboxAuth = async () => {
 export const handleRedirect = async (dispatch) => {
   const accessToken = getAccessTokenFromUrl();
   if (accessToken) {
-    console.log("Access Token:", accessToken);
-    //   Зберіг у стор
     localStorage.setItem("dropboxAccessToken", accessToken);
     dispatch(setToken(accessToken));
     return accessToken;

@@ -83,10 +83,6 @@ export default function FoldersPageDetails() {
     }
   };
 
-  // const handleFileChange = (event) => {
-  //   setSelectedFile(event.target.files[0]);
-  // };
-
   const handleUpload = async () => {
     if (selectedFile) {
       await dispatch(
@@ -201,16 +197,24 @@ export default function FoldersPageDetails() {
               <button onClick={handleCloseModal} className={css.closeButton}>
                 <IoCloseCircleOutline size={24} />
               </button>
-              <input
-                className={css.input}
-                type="text"
-                value={folderName}
-                onChange={(e) => setFolderName(e.target.value)}
-                placeholder="Enter folder name"
-              />
-              <button className={css.btnToCreate} onClick={handleCreateFolder}>
-                Create
-              </button>
+              <form
+                className={css.form}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleCreateFolder();
+                }}
+              >
+                <input
+                  className={css.input}
+                  type="text"
+                  value={folderName}
+                  onChange={(e) => setFolderName(e.target.value)}
+                  placeholder="Enter folder name"
+                />
+                <button type="submit" className={css.btnToCreate}>
+                  Create
+                </button>
+              </form>
             </div>
           </div>
         )}

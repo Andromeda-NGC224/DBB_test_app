@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import { selectStatus, selectToken } from "../../redux/selectors.js";
+import { selectStatus } from "../../redux/selectors.js";
 import { Loader } from "../../components/Loader/Loader.jsx";
 import { Hero } from "../../components/Hero/Hero.jsx";
 

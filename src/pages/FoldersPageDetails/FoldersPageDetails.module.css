@@ -1,3 +1,7 @@
+.form {
+  font-size: 44px;
+}
+
 .mainCont {
   display: flex;
   flex-direction: column;
