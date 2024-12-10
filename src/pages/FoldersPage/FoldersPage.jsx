@@ -24,7 +24,8 @@ export default function FoldersPage() {
     setFolderName("");
   };
 
-  const handleCreateFolder = async () => {
+  const handleCreateFolder = async (e) => {
+    e.preventDefault();
     if (folderName === "") {
       toast.error("Enter the name of folder, please.");
       return;
@@ -74,31 +75,24 @@ export default function FoldersPage() {
 
             {showModal && (
               <div className={css.overlay} onClick={handleOverlayClick}>
-                <div className={css.modal}>
+                <form className={css.modal} onSubmit={handleCreateFolder}>
                   <button
                     onClick={handleCloseModal}
                     className={css.closeButton}
                   >
                     <IoCloseCircleOutline size={24} />
                   </button>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      handleCreateFolder();
-                    }}
-                  >
-                    <input
-                      className={css.input}
-                      type="text"
-                      value={folderName}
-                      onChange={(e) => setFolderName(e.target.value)}
-                      placeholder="Enter folder name"
-                    />
-                    <button type="submit" className={css.btnToCreate}>
-                      Create
-                    </button>
-                  </form>
-                </div>
+                  <input
+                    className={css.input}
+                    type="text"
+                    value={folderName}
+                    onChange={(e) => setFolderName(e.target.value)}
+                    placeholder="Enter folder name"
+                  />
+                  <button type="submit" className={css.btnToCreate}>
+                    Create
+                  </button>
+                </form>
               </div>
             )}
           </div>

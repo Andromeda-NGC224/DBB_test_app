@@ -139,7 +139,8 @@ export default function FoldersPageDetails() {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
-  const handleCreateFolder = async () => {
+  const handleCreateFolder = async (e) => {
+    e.preventDefault();
     if (folderName === "") {
       toast.error("Enter the name of folder, please.");
       return;
@@ -193,13 +194,7 @@ export default function FoldersPageDetails() {
         </button>
         {showModal && (
           <div className={css.overlay} onClick={handleOverlayClick}>
-            <form
-              className={css.modal}
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleCreateFolder();
-              }}
-            >
+            <form className={css.modal} onSubmit={handleCreateFolder}>
               <button onClick={handleCloseModal} className={css.closeButton}>
                 <IoCloseCircleOutline size={24} />
               </button>
