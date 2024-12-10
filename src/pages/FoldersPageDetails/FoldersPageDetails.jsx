@@ -193,29 +193,27 @@ export default function FoldersPageDetails() {
         </button>
         {showModal && (
           <div className={css.overlay} onClick={handleOverlayClick}>
-            <div className={css.modal}>
+            <form
+              className={css.modal}
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleCreateFolder();
+              }}
+            >
               <button onClick={handleCloseModal} className={css.closeButton}>
                 <IoCloseCircleOutline size={24} />
               </button>
-              <form
-                className={css.form}
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleCreateFolder();
-                }}
-              >
-                <input
-                  className={css.input}
-                  type="text"
-                  value={folderName}
-                  onChange={(e) => setFolderName(e.target.value)}
-                  placeholder="Enter folder name"
-                />
-                <button type="submit" className={css.btnToCreate}>
-                  Create
-                </button>
-              </form>
-            </div>
+              <input
+                className={css.input}
+                type="text"
+                value={folderName}
+                onChange={(e) => setFolderName(e.target.value)}
+                placeholder="Enter folder name"
+              />
+              <button type="submit" className={css.btnToCreate}>
+                Create
+              </button>
+            </form>
           </div>
         )}
         <h2 className={css.title}>Folder name: {folder.name}</h2>
