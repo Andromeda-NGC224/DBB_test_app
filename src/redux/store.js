@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import filesReducer from "./filesSlice.js";
 import {
   persistStore,
   persistReducer,
@@ -11,20 +12,17 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import filesReducer from "./filesSlice.js";
-
 const persistConfig = {
-  key: "root",
-  version: 1,
+  key: "files",
   storage,
-  whitelist: ["files"],
+  whitelist: ["token"],
 };
 
-const persistedFilesReducer = persistReducer(persistConfig, filesReducer);
+const persistedReducer = persistReducer(persistConfig, filesReducer);
 
 export const store = configureStore({
   reducer: {
-    files: persistedFilesReducer,
+    files: persistedReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

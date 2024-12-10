@@ -182,6 +182,16 @@ export default function FoldersPageDetails() {
     };
   }, []);
 
+  const handleLoadCurrentItem = async (id, path) => {
+    try {
+      await dispatch(fetchItemById(id));
+      await dispatch(fetchContentFoldersInFolder(`${path}`));
+      await dispatch(fetchContentOfFolder(path));
+    } catch (error) {
+      console.error("Error loading folder content:", error);
+    }
+  };
+
   if (!folder || folder.id !== id) {
     return <Loader />;
   }

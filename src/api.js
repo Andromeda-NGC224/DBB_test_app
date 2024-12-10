@@ -4,6 +4,8 @@ import { setToken } from "./redux/filesSlice.js";
 const CLIENT_ID = "dona9fqxig1hh32";
 const REDIRECT_URI = "https://dbb-test-app.vercel.app/redirect";
 
+// https://dbb-test-app.vercel.app/redirect
+// http://localhost:5173/redirect
 
 const getAccessTokenFromUrl = () => {
   return new URLSearchParams(window.location.hash.substring(1)).get(
@@ -15,18 +17,11 @@ export const isAuthenticated = () => {
   return !!getAccessTokenFromUrl();
 };
 
-const removeTokenAfterOneHour = () => {
-  setTimeout(() => {
-    localStorage.removeItem("dropboxAccessToken");
-  }, 3600000);
-};
-
 export const dropboxAuth = async () => {
   const dbx = new Dropbox({ clientId: CLIENT_ID });
   try {
     const authUrl = await dbx.auth.getAuthenticationUrl(REDIRECT_URI);
     window.location.href = authUrl;
-    removeTokenAfterOneHour();
   } catch (error) {
     console.error("Error getting auth URL:", error);
   }
@@ -35,7 +30,6 @@ export const dropboxAuth = async () => {
 export const handleRedirect = async (dispatch) => {
   const accessToken = getAccessTokenFromUrl();
   if (accessToken) {
-    localStorage.setItem("dropboxAccessToken", accessToken);
     dispatch(setToken(accessToken));
     return accessToken;
   } else {

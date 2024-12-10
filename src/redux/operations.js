@@ -4,7 +4,10 @@ import { Dropbox } from "dropbox";
 export const fetchContent = createAsyncThunk(
   "files/fetchContent",
   async (path, thunkAPI) => {
-    const token = localStorage.getItem("dropboxAccessToken");
+    const state = thunkAPI.getState();
+    const token = state.files.token;
+    if (!token) return thunkAPI.rejectWithValue("No token available");
+
     const dropbox = new Dropbox({ accessToken: token });
     try {
       const response = await dropbox.filesListFolder({ path });
@@ -14,10 +17,14 @@ export const fetchContent = createAsyncThunk(
     }
   }
 );
+
 export const fetchContentFoldersInFolder = createAsyncThunk(
   "files/fetchContentFoldersInFolder",
   async (path, thunkAPI) => {
-    const token = localStorage.getItem("dropboxAccessToken");
+    const state = thunkAPI.getState();
+    const token = state.files.token;
+    if (!token) return thunkAPI.rejectWithValue("No token available");
+
     const dropbox = new Dropbox({ accessToken: token });
     try {
       const response = await dropbox.filesListFolder({ path });
@@ -34,7 +41,10 @@ export const fetchContentFoldersInFolder = createAsyncThunk(
 export const fetchContentOfFolder = createAsyncThunk(
   "files/fetchContentOfFolder",
   async (path, thunkAPI) => {
-    const token = localStorage.getItem("dropboxAccessToken");
+    const state = thunkAPI.getState();
+    const token = state.files.token;
+    if (!token) return thunkAPI.rejectWithValue("No token available");
+
     const dropbox = new Dropbox({ accessToken: token });
     try {
       const response = await dropbox.filesListFolder({ path });
@@ -47,10 +57,14 @@ export const fetchContentOfFolder = createAsyncThunk(
     }
   }
 );
+
 export const fetchItemById = createAsyncThunk(
   "files/fetchItemById",
   async (id, thunkAPI) => {
-    const token = localStorage.getItem("dropboxAccessToken");
+    const state = thunkAPI.getState();
+    const token = state.files.token;
+    if (!token) return thunkAPI.rejectWithValue("No token available");
+
     const dropbox = new Dropbox({ accessToken: token });
     try {
       const response = await dropbox.filesGetMetadata({ path: id });
@@ -64,7 +78,10 @@ export const fetchItemById = createAsyncThunk(
 export const createFolder = createAsyncThunk(
   "files/createFolder",
   async ({ path, name }, thunkAPI) => {
-    const token = localStorage.getItem("dropboxAccessToken");
+    const state = thunkAPI.getState();
+    const token = state.files.token;
+    if (!token) return thunkAPI.rejectWithValue("No token available");
+
     const dropbox = new Dropbox({ accessToken: token });
     try {
       const response = await dropbox.filesCreateFolderV2({
@@ -80,7 +97,10 @@ export const createFolder = createAsyncThunk(
 export const uploadFile = createAsyncThunk(
   "files/uploadFile",
   async ({ path, file }, thunkAPI) => {
-    const token = localStorage.getItem("dropboxAccessToken");
+    const state = thunkAPI.getState();
+    const token = state.files.token;
+    if (!token) return thunkAPI.rejectWithValue("No token available");
+
     const dropbox = new Dropbox({ accessToken: token });
     try {
       const response = await dropbox.filesUpload({
@@ -97,7 +117,10 @@ export const uploadFile = createAsyncThunk(
 export const deleteItem = createAsyncThunk(
   "files/deleteItem",
   async (path, thunkAPI) => {
-    const token = localStorage.getItem("dropboxAccessToken");
+    const state = thunkAPI.getState();
+    const token = state.files.token;
+    if (!token) return thunkAPI.rejectWithValue("No token available");
+
     const dropbox = new Dropbox({ accessToken: token });
     try {
       const response = await dropbox.filesDeleteV2({ path });
@@ -111,7 +134,10 @@ export const deleteItem = createAsyncThunk(
 export const getDownloadLink = createAsyncThunk(
   "files/getDownloadLink",
   async (path, thunkAPI) => {
-    const token = localStorage.getItem("dropboxAccessToken");
+    const state = thunkAPI.getState();
+    const token = state.files.token;
+    if (!token) return thunkAPI.rejectWithValue("No token available");
+
     const dropbox = new Dropbox({ accessToken: token });
     try {
       const response = await dropbox.filesGetTemporaryLink({ path });

@@ -10,7 +10,6 @@ export default function Header() {
   const token = useSelector(selectToken);
 
   const logout = () => {
-    localStorage.removeItem("dropboxAccessToken");
     dispatch(clearToken());
   };
 
