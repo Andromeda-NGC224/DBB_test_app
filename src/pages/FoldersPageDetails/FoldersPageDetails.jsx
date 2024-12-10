@@ -195,7 +195,11 @@ export default function FoldersPageDetails() {
         {showModal && (
           <div className={css.overlay} onClick={handleOverlayClick}>
             <form className={css.modal} onSubmit={handleCreateFolder}>
-              <button onClick={handleCloseModal} className={css.closeButton}>
+              <button
+                type="button"
+                onClick={handleCloseModal}
+                className={css.closeButton}
+              >
                 <IoCloseCircleOutline size={24} />
               </button>
               <input

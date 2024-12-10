@@ -41,8 +41,8 @@ export default function FoldersPage() {
     }
   };
 
-  const handleOverlayClick = (event) => {
-    if (event.target === event.currentTarget) {
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
       handleCloseModal();
     }
   };
@@ -77,6 +77,7 @@ export default function FoldersPage() {
               <div className={css.overlay} onClick={handleOverlayClick}>
                 <form className={css.modal} onSubmit={handleCreateFolder}>
                   <button
+                    type="button"
                     onClick={handleCloseModal}
                     className={css.closeButton}
                   >
